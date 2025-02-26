@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Advanced ATS Scoring</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    textarea { width: 100%; height: 100px; }
+    .container { max-width: 600px; margin: auto; }
+    label { font-weight: bold; display: block; margin-top: 15px; }
+    button { margin-top: 15px; padding: 10px 20px; }
+    #result { margin-top: 20px; padding: 10px; background: #f2f2f2; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Advanced ATS Scoring</h1>
+    <label for="resume">Resume:</label>
+    <textarea id="resume" placeholder="Paste resume text here..."></textarea>
+    
+    <label for="jobDescription">Job Description:</label>
+    <textarea id="jobDescription" placeholder="Paste job description here..."></textarea>
+    
+    <button id="submitBtn">Get ATS Score</button>
+    
+    <div id="result"></div>
+  </div>
+
+  <script>
+    document.getElementById("submitBtn").addEventListener("click", async () => {
+      const resume = document.getElementById("resume").value;
+      const jobDescription = document.getElementById("jobDescription").value;
+
+      // Check that both fields are filled
+      if (!resume || !jobDescription) {
+        alert("Please enter both resume and job description text.");
+        return;
+      }
+
+      try {
+        const response = await fetch("http://localhost:5001/score", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ resume, job_description: jobDescription })
+        });
+
+        const data = await response.json();
+        document.getElementById("result").innerHTML = `
+          <strong>ATS Score:</strong> ${data.ats_score}<br>
+          <strong>Resume:</strong> ${data.resume}<br>
+          <strong>Job Description:</strong> ${data.job_description}
+        `;
+      } catch (error) {
+        console.error("Error:", error);
+        alert("An error occurred while processing your request.");
+      }
+    });
+  </script>
+</body>
+</html>

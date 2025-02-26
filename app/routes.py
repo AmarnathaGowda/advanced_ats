@@ -1,8 +1,17 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify,send_from_directory, current_app
 from flasgger import swag_from
 from app.model import compute_ats_score
+import os
 
 main_bp = Blueprint('main', __name__)
+
+
+@main_bp.route('/', methods=['GET'])
+def serve_frontend():
+    file_path = os.path.join(current_app.root_path, 'index.html')
+    current_app.logger.info(f"Serving file from: {file_path}")
+    # Adjust the path if you store index.html in a subfolder
+    return send_from_directory(current_app.root_path, 'index.html')
 
 @main_bp.route('/score', methods=['POST'])
 @swag_from({
@@ -59,3 +68,5 @@ def score_resume():
         'job_description': job_description,
         'ats_score': ats_score
     })
+
+
