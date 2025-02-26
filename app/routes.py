@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from flasgger import swag_from
+from app.model import compute_ats_score
 
 main_bp = Blueprint('main', __name__)
 
@@ -48,10 +49,13 @@ def score_resume():
     job_description = data.get('job_description', '')
     
     # Dummy ATS score calculation (to be replaced with model logic later)
-    dummy_score = 0.85
+    # dummy_score = 0.85
+
+    # Calculate ATS score using the model
+    ats_score = compute_ats_score(resume_text, job_description)
     
     return jsonify({
         'resume': resume_text,
         'job_description': job_description,
-        'ats_score': dummy_score
+        'ats_score': ats_score
     })
